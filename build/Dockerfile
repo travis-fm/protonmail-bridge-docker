@@ -1,26 +1,43 @@
 # The build image could be golang, but it currently does not support riscv64. Only debian:sid does, at the time of writing.
-FROM debian:sid-slim AS build
+FROM debian:trixie-slim AS build
 
 ARG version
 
 # Install dependencies
-RUN apt-get update && apt-get install -y golang build-essential libsecret-1-dev
+RUN <<EOF
+    apt-get update
+    apt-get install -y \
+        build-essential \
+        golang \
+        libcbor-dev \
+        libfido2-dev \
+        libsecret-1-dev \
+        pkg-config \
+EOF
 
 # Build
 ADD https://github.com/ProtonMail/proton-bridge.git#${version} /build/
 WORKDIR /build/
 RUN make build-nogui vault-editor
 
-FROM debian:sid-slim
-LABEL maintainer="Simon Felding <sife@adm.ku.dk>"
+FROM debian:trixie-slim
+LABEL maintainer="travis-fm <git@travis.fm>"
 
 EXPOSE 25/tcp
 EXPOSE 143/tcp
 
 # Install dependencies and protonmail bridge
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends socat pass libsecret-1-0 ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+RUN <<EOF
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        libcbor0.10 \
+        libfido2-1 \
+        libsecret-1-0 \
+        pass \
+        socat
+    rm -rf /var/lib/apt/lists/*
+EOF
 
 # Copy bash scripts
 COPY gpgparams entrypoint.sh /protonmail/
