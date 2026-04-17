@@ -1,4 +1,4 @@
-name: update check
+name: Check for Updates
 
 on:
   push:
