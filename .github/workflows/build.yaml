@@ -51,7 +51,7 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: |
-            ${{ env.GHCR_REPO }}
+            ${{ env.GHCR_FULL }}
 
       - name: Login to GHCR
         uses: docker/login-action@v4
