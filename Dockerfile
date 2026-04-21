@@ -34,7 +34,7 @@ RUN <<EOF
 EOF
 
 # Copy bash scripts
-COPY gpgparams entrypoint.sh /protonmail/
+COPY entrypoint.sh /protonmail/
 
 # Copy protonmail
 COPY --from=build /build/bridge /protonmail/
