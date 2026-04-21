@@ -16,7 +16,6 @@ COPY proton-bridge/ /build/
 RUN make build-nogui vault-editor
 
 FROM alpine
-LABEL maintainer="travis-fm <git@travis.fm>"
 
 EXPOSE 25/tcp
 EXPOSE 143/tcp
