@@ -1,26 +1,21 @@
-# The build image could be golang, but it currently does not support riscv64. Only debian:sid does, at the time of writing.
-FROM debian:trixie-slim AS build
+FROM golang:alpine AS build
 
-ARG version
-
-# Install dependencies
 RUN <<EOF
-    apt-get update
-    apt-get install -y \
-        build-essential \
-        golang \
+    apk add --no-cache \
+        bash \
+        build-base \
         libcbor-dev \
         libfido2-dev \
-        libsecret-1-dev \
-        pkg-config \
+        libsecret-dev \
+        make \
+        pkgconf \
 EOF
 
-# Build
-ADD https://github.com/ProtonMail/proton-bridge.git#${version} /build/
 WORKDIR /build/
+COPY proton-bridge/ /build/
 RUN make build-nogui vault-editor
 
-FROM debian:trixie-slim
+FROM alpine
 LABEL maintainer="travis-fm <git@travis.fm>"
 
 EXPOSE 25/tcp
@@ -28,15 +23,14 @@ EXPOSE 143/tcp
 
 # Install dependencies and protonmail bridge
 RUN <<EOF
-    apt-get update
-    apt-get install -y --no-install-recommends \
+    apk add --no-cache \
         ca-certificates \
-        libcbor0.10 \
-        libfido2-1 \
-        libsecret-1-0 \
+        gpg-agent \
+        libcbor \
+        libfido2 \
+        libsecret \
         pass \
         socat
-    rm -rf /var/lib/apt/lists/*
 EOF
 
 # Copy bash scripts
@@ -47,4 +41,5 @@ COPY --from=build /build/bridge /protonmail/
 COPY --from=build /build/proton-bridge /protonmail/
 COPY --from=build /build/vault-editor /protonmail/
 
+VOLUME /root
 ENTRYPOINT ["bash", "/protonmail/entrypoint.sh"]

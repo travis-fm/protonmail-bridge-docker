@@ -2,8 +2,10 @@
 
 set -ex
 
+rm -f /root/.gnupg/public-keys.d/pubring.db.lock
+
 # Initialize
-if [[ $1 == init ]]; then
+if [[ $1 == "init" ]]; then
 
     # Initialize pass
     gpg --generate-key --batch /protonmail/gpgparams
@@ -16,7 +18,7 @@ if [[ $1 == init ]]; then
     pkill protonmail-bridge || true
 
     # Login
-    /protonmail/proton-bridge --cli $@
+    /protonmail/proton-bridge --cli "$@"
 
 else
 
@@ -30,6 +32,5 @@ else
     # Fake a terminal, so it does not quit because of EOF...
     rm -f faketty
     mkfifo faketty
-    cat faketty | /protonmail/proton-bridge --cli $@
-
+    cat faketty | /protonmail/proton-bridge --cli "$@"
 fi
