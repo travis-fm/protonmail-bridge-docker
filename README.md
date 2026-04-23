@@ -18,7 +18,7 @@ Tags folow the following formats:
 
    Tag    | Description | Example
 ----------|-------------|---------
-`latest` | The latest Bridge release (**includes pre-releases**) |
+`latest` | The latest Bridge release (**includes pre-releases**) | `latest`
 `v<major>` | The latest release in major version | `v3`
 `<major>.<minor>` | The latest major/minor version | `3.24`
 `<major>.<minor>.<patch>` | Specific version release | `3.24.2`
