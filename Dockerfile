@@ -25,6 +25,7 @@ RUN <<EOF
     apk add --no-cache \
         ca-certificates \
         gpg-agent \
+        jq \
         libcbor \
         libfido2 \
         libsecret \

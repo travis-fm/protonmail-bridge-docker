@@ -30,6 +30,11 @@ EOF
     # || true to make sure this would not fail in case there is no running instance.
     pkill protonmail-bridge || true
 
+    # Disable telemetry and auto-updates
+    /protonmail/vault-editor read | \
+        jq '.Settings.AutoUpdate=false | .Settings.TelemetryDisabled=true' | \
+        /protonmail/vault-editor write
+        
     # Login
     /protonmail/proton-bridge --cli "$@"
 
